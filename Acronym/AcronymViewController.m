@@ -61,6 +61,7 @@
         [self.serviceAgent downloadAcronymValues:self.acronymTextField.text errorHandler:^(NSError *error) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self hideProgressView];
+                [self displayError:error];
                 self.acronymValues = nil;
                 [self.standsForTableView reloadData];
             });
@@ -87,6 +88,34 @@
     }
 }
 
+- (void) displayError:(NSError *)error
+{
+    switch (error.code)
+    {
+        case NSURLErrorCannotFindHost:
+        case NSURLErrorCannotConnectToHost:
+        case NSURLErrorNotConnectedToInternet:
+        case NSURLErrorSecureConnectionFailed:
+        case NSURLErrorServerCertificateHasBadDate:
+        case NSURLErrorServerCertificateUntrusted:
+        case NSURLErrorCannotLoadFromNetwork:
+        case -1008:
+        case -1005:
+        {
+            UIAlertController *alertContrller = [UIAlertController alertControllerWithTitle:@"Network Error" message:NSLocalizedString(@"Network connection is not available.", comment:@"") preferredStyle:UIAlertControllerStyleAlert];
+            UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleCancel handler:nil];
+            [alertContrller addAction:cancelAction];
+            [self presentViewController:alertContrller animated:YES completion:nil];
+        }
+        default:
+        {
+            UIAlertController *alertContrller = [UIAlertController alertControllerWithTitle:@"Error" message:NSLocalizedString(@"Server error occured.", comment:@"") preferredStyle:UIAlertControllerStyleAlert];
+            UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleCancel handler:nil];
+            [alertContrller addAction:cancelAction];
+            [self presentViewController:alertContrller animated:YES completion:nil];
+        }
+    }
+}
 - (void) showProgressView
 {
     if (self.progressView == nil)
