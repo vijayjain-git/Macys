@@ -1,5 +1,5 @@
 //
-//  ViewController.h
+//  StandsForTableViewCell.h
 //  Acronym
 //
 //  Created by Vijay Jain on 11/15/16.
@@ -8,8 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface ViewController : UIViewController
-
-
+@interface StandsForTableViewCell : UITableViewCell
+- (void) setupValue:(NSString *)value;
 @end
-
